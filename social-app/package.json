@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.11.3",
+    "@clerk/nextjs": "^6.12.0",
     "client": "^0.0.1",
     "framer-motion": "^12.4.3",
     "input": "^1.0.1",
