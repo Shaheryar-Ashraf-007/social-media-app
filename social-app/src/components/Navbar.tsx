@@ -11,9 +11,19 @@ import Link from "next/link";
 import { BsPeople } from "react-icons/bs";
 import { FiMessageSquare } from "react-icons/fi";
 import { FaRegUserCircle } from "react-icons/fa";
-import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 
 const Navbar = () => {
+
+  const { isSignedIn, user} = useUser();
+
+  const Id = user?.id
+  console.log("UserID",Id)
+
+  
+  console.log("Clerk Authenticated:", isSignedIn);
+  console.log("User Data:", user);
+
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const handleOpenModal = () => setIsOpenModal(true);
