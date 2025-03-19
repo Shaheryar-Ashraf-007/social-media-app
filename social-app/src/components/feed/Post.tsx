@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import profile from "../../public/profile.jpg";
+import profile from "../../../public/profile.jpg";
 import { IoIosMore } from "react-icons/io";
 import { AiFillMessage } from "react-icons/ai";
 import { FaShare } from "react-icons/fa";

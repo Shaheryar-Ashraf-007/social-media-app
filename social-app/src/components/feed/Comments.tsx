@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import coimage from "../../public/coimage.jpg";
+import coimage from "../../../public/coimage.jpg";
 import { BsEmojiSmileFill } from "react-icons/bs";
 import { IoIosMore } from "react-icons/io";
 import { BiLike } from "react-icons/bi";

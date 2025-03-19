@@ -1,16 +1,17 @@
 import React from 'react';
 import Link from 'next/link';
-import image1 from '../../public/image1.jpg';
-import image2 from '../../public/image2.jpg';
-import image3 from '../../public/image3.jpg';
-import image4 from '../../public/image4.jpg';
-import image5 from '../../public/image5.jpg';
-import image6 from '../../public/image6.jpg';
-import image7 from '../../public/image7.jpg';
-import image8 from '../../public/image8.jpg';
+import image1 from '../../../public/image1.jpg';
+import image2 from '../../../public/image2.jpg';
+import image3 from '../../../public/image3.jpg';
+import image4 from '../../../public/image4.jpg';
+import image5 from '../../../public/image5.jpg';
+import image6 from '../../../public/image6.jpg';
+import image7 from '../../../public/image7.jpg';
+import image8 from '../../../public/image8.jpg';
 import Image from 'next/image';
+import { User } from '@clerk/nextjs/server';
 
-const UserMediaCard = ({ userId }: { userId?: string }) => {
+const UserMediaCard = ({ user }: { user?: User }) => {
   const images = [
 
 

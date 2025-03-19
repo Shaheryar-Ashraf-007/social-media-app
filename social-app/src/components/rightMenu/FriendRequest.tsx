@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import request from '../../public/request.jpg';
+import request from '../../../public/request.jpg';
 import { MdOutlineCancel } from 'react-icons/md';
 import { MdOutlineGppGood } from 'react-icons/md';
 

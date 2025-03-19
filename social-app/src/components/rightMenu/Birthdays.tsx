@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import request from '../../public/request.jpg';
+import request from '../../../public/request.jpg';
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
 import Link from 'next/link';
 

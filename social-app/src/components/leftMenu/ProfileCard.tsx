@@ -1,16 +1,41 @@
+"use server"
 import React from "react";
 import Image from "next/image";
-import image7 from "../../public/image7.jpg";
-import image8 from "../../public/image8.jpg";
+import image8 from "../../../public/image8.jpg";
+import { auth } from "@clerk/nextjs/server";
+import prisma from "@/lib/client";
 
-const ProfileCard = () => {
+const ProfileCard =async() => {
+
+  const {userId} = await auth()
+
+  if (!userId) {
+    return null
+  }
+
+  const user = await prisma.user.findFirst({
+
+    where: {
+      id: userId
+    },
+    include:{
+      _count:{
+        select:{
+          followers:true
+        }
+      }
+    }
+  })
+  console.log(user)
+
+  if (!user) return null
   return (
     <div>
       <div className="p-4 bg-white rounded-lg shadow-md text-sm flex flex-col gap-6 mt-8">
         <div className="h-20 relative">
-          <Image src={image7} alt="" fill className="rounded-md" />
+          <Image src={user.cover || "/image7.jpg"} alt="" fill className="rounded-md" />
           <Image
-            src={image8}
+            src={user.avatar || "/image8.jpg"}
             alt=""
             width={48}
             height={48}
@@ -18,7 +43,7 @@ const ProfileCard = () => {
           />
         </div>
         <div className="h-20 flex flex-col gap-2 items-center">
-          <span className="font-semibold">Edward Gabriel May</span>
+          <span className="font-semibold">{(user.name && user.surname) ? user.name + " " + user.surname : user.name}</span>
           <div className="flex items-center gap-4">
             <div className="flex">
               <Image
@@ -45,7 +70,7 @@ const ProfileCard = () => {
                 className="rounded-full object-cover w-3 h-3"
               />
             </div>
-            <span className="text-xs text-gray-500">500 Followers</span>
+            <span className="text-xs text-gray-500">{user._count.followers}</span>
           </div>
           <button className="bg-blue-500 rounded-lg p-2 text-white">My Profile</button>
         </div>

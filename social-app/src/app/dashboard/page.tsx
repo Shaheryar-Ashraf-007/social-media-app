@@ -1,8 +1,9 @@
-import Feed from '@/components/Feed';
-import LeftMenu from '@/components/LeftMenu';
-import RightMenu from '@/components/RightMenu';
+
+import RightMenu from '@/components/rightMenu/RightMenu';
 import Stories from '@/components/Stories';
 import AddPost from '@/components/AddPost';
+import LeftMenu from '@/components/leftMenu/LeftMenu';
+import Feed from '@/components/feed/Feed';
 const Homepage = async () => {
   return (
     <div className="flex gap-6 pt-6">

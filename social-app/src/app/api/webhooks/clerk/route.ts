@@ -1,10 +1,26 @@
+"use server"
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
-import prisma from '../../../../lib/client';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+// Type definitions
+interface ClerkWebhookEventData {
+    id: string;
+    username?: string;
+    image_url?: string;
+  }
+  
+  interface ClerkWebhookEvent {
+    type: string;
+    data: ClerkWebhookEventData;
+  }
+  
 
 export async function POST(req: Request) {
-  const SIGNING_SECRET ="whsec_dDKWtK+22Rm7oXqDVevaUaClhWYh1S+W"
+  const SIGNING_SECRET = process.env.SIGNING_SECRET
 
   if (!SIGNING_SECRET) {
     throw new Error('Error: Please add SIGNING_SECRET from Clerk Dashboard to .env or .env')
@@ -51,37 +67,43 @@ export async function POST(req: Request) {
   const { id } = evt.data
   const eventType = evt.type
 
-  if (eventType === "user.created") {
+  if (eventType === 'user.created') {
     try {
-      await prisma.user.create({
-        data: {
-          id: evt.data.id,
-          username: JSON.parse(body).data.username,
-          avatar: JSON.parse(body).data.image_url || "image7.png",
-          cover: "image6.png"
-        }
-      })
+        await prisma.user.create({
+            data: {
+                id: evt.data.id,
+                username:JSON.parse(body).data.username,
+                avatar:JSON.parse(body).data.image_url || '/image7.jpg',
+                cover:'/image7.jpg'
+            }
+        })
     } catch (error) {
-      console.error('Error creating user:', error)
-      return new Response('Error: Failed to create user', { status: 500 })
+        console.error('Error: Could not create user:', error)
+        return new Response('Error: Could not create user', {
+          status: 400,
+        })
+        
     }
   }
 
-  if (eventType === "user.updated") {
+
+  if (eventType === 'user.updated') {
     try {
-      await prisma.user.update({
-        where: {
-          id: evt.data.id,
-        },
-        data: {
-          username: JSON.parse(body).data.username,
-          avatar: JSON.parse(body).data.image_url || "image7.png",
-        }
-      })
-      return new Response("User has been updated", { status: 200 })
+        await prisma.user.update({
+            where: {
+                id: evt.data.id
+            },
+            data: {
+                username:JSON.parse(body).data.username,
+                avatar:JSON.parse(body).data.image_url || "/albums.png",
+            }
+        })
     } catch (error) {
-      console.error('Error updating user:', error)
-      return new Response('Failed to update user', { status: 500 })
+        console.error('Error: Could not create user:', error)
+        return new Response('Error: Could not update user', {
+          status: 400,
+        })
+        
     }
   }
   console.log(`Received webhook with ID ${id} and event type of ${eventType}`)
