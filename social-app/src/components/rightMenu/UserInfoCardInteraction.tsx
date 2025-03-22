@@ -1,6 +1,6 @@
 "use client";
-import { switchFollow } from "@/lib/actions";
-import React, { useState } from "react";
+import { switchBlock, switchFollow } from "@/lib/actions";
+import React, { useOptimistic, useState } from "react";
 
 const UserInfoCardInteraction = ({
   userId,
@@ -22,6 +22,8 @@ const UserInfoCardInteraction = ({
   })
 
   const follow = async()=>{
+
+    switchOptimisticState("follow");
     try {
       await switchFollow(userId);
 
@@ -31,25 +33,58 @@ const UserInfoCardInteraction = ({
         followingRequestSent: !prev.following && !prev.followingRequestSent ? true : false
       }))
     } catch (error) {
-
-      console.log(error)
+ console.log(error)
       
+    }}
+
+    const block = async()=>{
+
+      switchOptimisticState("block");
+      try {
+        await switchBlock(userId);
+  
+        setUserState((prev)=>({
+          ...prev,
+          blocked: !prev.blocked
+        }))
+        
+      } catch (error) {
+
+        console.log(error)
+        
+      }
+
     }
-  }
+
+    const [optimisticState, switchOptimisticState] = useOptimistic(
+      userState,
+      (state, value: "follow" | "block") => 
+          value === "follow" 
+              ? {
+                  ...state,
+                  following: false,
+                  followingRequestSent: !state.following && !state.followingRequestSent,
+                } 
+              : {
+                  ...state,
+                  blocked: !state.blocked,
+                }
+  );
+  
   return (
     <>
       <form action={follow}>
         <button className="w-full rounded-md px-4 py-2 text-white bg-blue-500">
-          {userState.following
+          {optimisticState.following
             ? "Following"
-            :userState.followingRequestSent
+            :optimisticState.followingRequestSent
             ? "Freind Request Sent"
             : isUserFollowingSent
             ? "Friend Request Sent"
             : "follow"}
         </button>
       </form>
-      <form action="">
+      <form action={block}>
         <button className="w-full rounded-md text-red-500  px-4 py-2 bg-slate-100">
           {userState.blocked ? "Unblock User" : "Block User"}
         </button>

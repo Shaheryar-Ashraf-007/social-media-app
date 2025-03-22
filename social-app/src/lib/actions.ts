@@ -2,16 +2,19 @@
 
 import { auth } from "@clerk/nextjs/server";
 import prisma from "./client";
+
 interface User {
     id: string;
     followerId: string;
     followingId: string;
 }
+
 interface FollowRequest {
     id: string;
     senderId: string;
     receiverId: string;
 }
+
 export const switchFollow = async (userId: string): Promise<void> => {
     const { userId: currentUserId } = await auth();
 
@@ -24,12 +27,11 @@ export const switchFollow = async (userId: string): Promise<void> => {
             where: {
                 followerId: currentUserId,
                 followingId: userId,
-
             },
         });
 
         if (existingUser) {
-            await prisma.user.delete({
+            await prisma.follower.delete({
                 where: {
                     id: existingUser.id,
                 },
@@ -56,6 +58,41 @@ export const switchFollow = async (userId: string): Promise<void> => {
                     },
                 });
             }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export const switchBlock = async (userId: string): Promise<void> => {
+    const { userId: currentUserId } = await auth();
+
+    if (!currentUserId) {
+        throw new Error("User is not authenticated");
+    }
+
+    try {
+        const existingBlock: User | null = await prisma.block.findFirst({
+            where: {
+                blockerId: currentUserId,
+                blockedId: userId,
+            },
+        });
+
+
+        if (existingBlock) {
+            await prisma.block.delete({
+                where: {
+                    id: existingBlock.id,
+                },
+            });
+        } else {
+            await prisma.block.create({
+                data: {
+                    blockerId: currentUserId,
+                    blockedId: userId,
+                },
+            });
         }
     } catch (error) {
         console.error(error);
