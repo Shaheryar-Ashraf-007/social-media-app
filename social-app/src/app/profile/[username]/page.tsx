@@ -6,11 +6,14 @@ import { notFound } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import LeftMenu from '@/components/leftMenu/LeftMenu';
 import Feed from '@/components/feed/Feed';
+import "../../styles/globals.css";
 
 const Profilepage = async ({ params }: { params: { username: string } }) => {
   const username = params.username;
 
-  console.log("Username from params:", username); // Debugging
+  console.log("Username from params:", username);
+
+  console.log("Username from params:", username);
 
   const user = await prisma.user.findFirst({
     where: { username },
@@ -26,12 +29,11 @@ const Profilepage = async ({ params }: { params: { username: string } }) => {
   });
 
   if (!user) {
-    console.log("No user found with this username."); // Debugging
+    console.log("No user found with this username."); 
     return notFound();
   }
 
   const { userId: currentUserId } = await auth();
-
   let isBlocked = false;
 
   if (currentUserId) {
@@ -46,20 +48,17 @@ const Profilepage = async ({ params }: { params: { username: string } }) => {
   }
 
   if (isBlocked) {
-    console.log("User is blocked."); // Debugging
     return notFound();
   }
 
-  console.log("User fetched from database:", user); // Debugging
-
   return (
-    <div className='flex gap-6 pt-6'>
-      <div className="hidden xl:block w-[20%]">
+    <div className='flex h-screen'>
+      <div className="mt-28 ml-24 hidden xl:block w-[20%] fixed left-0 top-0 h-full overflow-y-auto scrollbar-hidden">
         <LeftMenu type='profile' />
       </div>
-      <div className="w-full lg:w-[70%] xl:w-[50%]">
-        <div className="flex flex-col gap-6">
-          <div className="mt-8 flex flex-col items-center justify-center">
+      <div className="w-full lg:w-[70%] xl:w-[50%] mt-28 ml-[25%] mr-[20%] overflow-y-auto h-full scrollbar-hidden">
+        <div className="flex flex-col gap-6 pt-6">
+          <div className="mt-28 flex flex-col items-center justify-center">
             <div className="w-full h-64 relative">
               <Image src={user.cover || "/image5.jpg"} alt='' fill className="rounded-md" />
               <Image src={user.avatar || "/image6.jpg"} alt='' width={128} height={128} className="w-32 h-32 rounded-full absolute left-0 right-0 m-auto -bottom-16 ring-4 ring-white" />
@@ -83,7 +82,7 @@ const Profilepage = async ({ params }: { params: { username: string } }) => {
           <Feed />
         </div>
       </div>
-      <div className="hidden lg:block w-[30%]">
+      <div className="mt-28 mr-24 hidden lg:block w-[20%] fixed right-0 top-0 h-full overflow-y-auto scrollbar-hidden">
         <RightMenu user={user} />
       </div>
     </div>

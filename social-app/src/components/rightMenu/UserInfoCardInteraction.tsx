@@ -8,7 +8,6 @@ const UserInfoCardInteraction = ({
   isUserFollowing,
   isUserFollowingSent,
 }: {
-  currentUserId: string;
   userId: string;
   isUserBlocked: boolean;
   isUserFollowing: boolean;

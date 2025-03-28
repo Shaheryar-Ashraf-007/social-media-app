@@ -8,6 +8,7 @@ import { FaCalendarDays } from "react-icons/fa6";
 import { auth, User } from '@clerk/nextjs/server';
 import prisma from '@/lib/client';
 import UserInfoCardInteraction from './UserInfoCardInteraction';
+import UpdateUser from './UpdateUser';
 
 
 
@@ -28,13 +29,13 @@ const UserInfoCard =  async ({user} : {user: User}) => {
   const {userId: currentUserId} = await auth()
 
   if(currentUserId){
-    const blockres = await prisma.block.findFirst({
+    const blockers = await prisma.block.findFirst({
       where:{
         blockerId: user.id,
         blockedId: currentUserId
       },
     });
-    blockres ? isUserBlocked = true : isUserBlocked = false
+    blockers? isUserBlocked = true : isUserBlocked = false
 
     const followRes = await prisma.follower.findFirst({
       where:{
@@ -59,7 +60,14 @@ const UserInfoCard =  async ({user} : {user: User}) => {
     <div className='p-4 bg-white rounded-lg shadow-md text-sm mt-8 flex flex-col gap-4'>
       <div className="flex items-center justify-between font-medium">
         <span className="text-gray-500">User Information</span>
-        <Link href='/' className='text-blue-500'>See All</Link>
+
+        {currentUserId === user.id ? (
+          <UpdateUser user={user}/>
+        ) : (
+          <Link href="/" className="text-blue-500 text-xs">
+            See all
+          </Link>
+        )}
       </div>
 
       {/* bottom  */}
@@ -111,7 +119,6 @@ const UserInfoCard =  async ({user} : {user: User}) => {
 
         <UserInfoCardInteraction
         userId = {user.id} 
-        currentUserId = {currentUserId}
         isUserBlocked = {isUserBlocked}
         isUserFollowing = {isUserFollowing}
         isUserFollowingSent = {isUserFollowingSent}/>

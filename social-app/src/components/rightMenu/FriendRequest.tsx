@@ -1,88 +1,37 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import request from '../../../public/request.jpg';
-import { MdOutlineCancel } from 'react-icons/md';
-import { MdOutlineGppGood } from 'react-icons/md';
+import prisma from "@/lib/client";
+import { auth } from "@clerk/nextjs/server";
+import Link from "next/link";
+import FriendRequestList from "./FriendRequestList";
 
-const FriendRequest = () => {
+const FriendRequests = async () => {
+  const { userId } = await auth();
+
+  if (!userId) return null;
+
+  const requests = await prisma.followRequest.findMany({
+    where: {
+      receiverId: userId,
+    },
+    include: {
+      sender: true,
+    },
+  });
+
+  if (requests.length === 0) return null;
   return (
-    <div className='p-4 bg-white rounded-lg shadow-md text-sm mt-8 flex flex-col gap-4'>
-      <div className="flex items-center justify-between font-medium">
+    <div className="p-4 bg-white rounded-lg shadow-md text-sm flex flex-col gap-4">
+      {/* TOP */}
+      <div className="flex justify-between items-center font-medium">
         <span className="text-gray-500">Friend Requests</span>
-        <Link href='/' className='text-blue-500'>See All</Link>
+        <Link href="/" className="text-blue-500 text-xs">
+          See all
+        </Link>
       </div>
-
-      <div className="flex items-center justify-between p-2">
-        <div className="flex items-center gap-4">
-          <Image 
-            src={request} 
-            alt="profile" 
-            width={40} 
-            height={40} 
-            className="rounded-full w-10 h-10 object-cover" 
-          />
-          <span className="font-semibold">John Doe</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <MdOutlineCancel size={24} className='text-gray-300 cursor-pointer' />
-          <MdOutlineGppGood size={24} className='bg-blue-500 rounded-full text-white cursor-pointer' />
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between p-2">
-        <div className="flex items-center gap-4">
-          <Image 
-            src={request} 
-            alt="profile" 
-            width={40} 
-            height={40} 
-            className="rounded-full w-10 h-10 object-cover" 
-          />
-          <span className="font-semibold">John Doe</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <MdOutlineCancel size={24} className='text-gray-300 cursor-pointer' />
-          <MdOutlineGppGood size={24} className='bg-blue-500 rounded-full text-white cursor-pointer' />
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between p-2">
-        <div className="flex items-center gap-4">
-          <Image 
-            src={request} 
-            alt="profile" 
-            width={40} 
-            height={40} 
-            className="rounded-full w-10 h-10 object-cover" 
-          />
-          <span className="font-semibold">John Doe</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <MdOutlineCancel size={24} className='text-gray-300 cursor-pointer' />
-          <MdOutlineGppGood size={24} className='bg-blue-500 rounded-full text-white cursor-pointer' />
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between p-2">
-        <div className="flex items-center gap-4">
-          <Image 
-            src={request} 
-            alt="profile" 
-            width={40} 
-            height={40} 
-            className="rounded-full w-10 h-10 object-cover" 
-          />
-          <span className="font-semibold">John Doe</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <MdOutlineCancel size={24} className='text-gray-300 cursor-pointer' />
-          <MdOutlineGppGood size={24} className='bg-blue-500 rounded-full text-white cursor-pointer' />
-        </div>
-      </div>
-
+      {/* USER */}
+      <FriendRequestList requests={requests}/>
+      
     </div>
   );
-}
+};
 
-export default FriendRequest;
+export default FriendRequests;
