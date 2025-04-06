@@ -163,12 +163,17 @@ export const declineFollowRequest = async (userId: string): Promise<void> => {
 export const updateProfile = async (
     prevState: { success: boolean; error: boolean },
     payload: { formData: FormData; cover: string }
+
+    
 ) => {
     const { formData, cover } = payload;
+
+    
     const fields = Object.fromEntries(formData);
+    
 
     const filteredFields = Object.fromEntries(
-        Object.entries(fields).filter(([_, value]) => value !== "")
+        Object.entries(fields).filter(([, value]) => value !== "")
     );
 
     const Profile = z.object({

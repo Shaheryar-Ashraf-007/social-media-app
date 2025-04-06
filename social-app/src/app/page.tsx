@@ -3,8 +3,8 @@ import Homepage from './dashboard/page'
 
 const page = () => {
   return (
-    <div>
-      <Homepage/>
+    <div className=' overflow-y-auto scrollbar-hidden'>
+      <Homepage />
     </div>
   )
 }

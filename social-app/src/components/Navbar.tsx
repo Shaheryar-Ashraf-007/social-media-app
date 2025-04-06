@@ -12,8 +12,16 @@ import { BsPeople } from "react-icons/bs";
 import { FiMessageSquare } from "react-icons/fi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { ClerkLoaded, ClerkLoading, SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
+
+  const handlepage = () => {
+
+  router.push("/dashboard")
+
+  }
 
   const { isSignedIn, user} = useUser();
 
@@ -33,8 +41,8 @@ const Navbar = () => {
     <div className="flex items-center justify-between p-4 ">
       {/* Left Section */}
       <div className="flex items-center text-lg md:text-2xl font-bold">
-        <Image className="w-8 h-8 md:w-16 md:h-16" src={logo} alt="logo" />
-        <span className="ml-2">Glimpse</span>
+        <Image onClick={handlepage} className="w-8 h-8 md:w-16 md:h-16 cursor-pointer" src={logo} alt="logo" />
+        <span onClick={handlepage} className="ml-2 cursor-pointer">Glimpse</span>
       </div>
 
       {/* Center Section */}

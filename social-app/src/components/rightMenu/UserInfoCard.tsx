@@ -76,7 +76,7 @@ const UserInfoCard =  async ({user} : {user: User}) => {
         <div className="flex items-center justify-start gap-2">
         <span className='text-xl text-black font-semibold'>{""}
        {(user.name && user.surname) ? user.name + " " + user.surname : user.username}</span>
-        <span className='text-sm'>{user.username}</span>
+        <span className='text-sm'>@{user.username}</span>
         </div>
       </div>
 
@@ -103,18 +103,15 @@ const UserInfoCard =  async ({user} : {user: User}) => {
         </span>
         </div>}
 
-        <div className="flex items-center justify-between">
-            {user.website && <div className=" flex items-center justify-between gap-2">
+            {user.website && <div className=" flex items-center gap-2">
         <FiLink size={16} className='text-gray-500' /> 
         <Link href={user.website} className='text-blue-500 text-xs'>{user.website}</Link>
         </div>
 }
-        
 
-        <div className="text-gray-500 flex items-center justify-between gap-2">
+        <div className="text-gray-500 flex items-center gap-2">
         <FaCalendarDays />
         <span className='text-xs font-medium'> joined {formattedDate}</span>
-        </div>
         </div>
 
         <UserInfoCardInteraction

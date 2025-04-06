@@ -53,14 +53,14 @@ const Profilepage = async ({ params }: { params: { username: string } }) => {
 
   return (
     <div className='flex h-screen'>
-      <div className="mt-28 ml-24 hidden xl:block w-[20%] fixed left-0 top-0 h-full overflow-y-auto scrollbar-hidden">
+      <div className=" ml-24 mt-28 hidden xl:block w-[20%] fixed left-0 top-0 h-full overflow-y-auto scrollbar-hidden">
         <LeftMenu type='profile' />
       </div>
       <div className="w-full lg:w-[70%] xl:w-[50%] mt-28 ml-[25%] mr-[20%] overflow-y-auto h-full scrollbar-hidden">
         <div className="flex flex-col gap-6 pt-6">
-          <div className="mt-28 flex flex-col items-center justify-center">
+          <div className=" flex flex-col items-center justify-center">
             <div className="w-full h-64 relative">
-              <Image src={user.cover || "/image5.jpg"} alt='' fill className="rounded-md" />
+              <Image src={user.cover || "/image7.jpg"} alt='' fill className="rounded-md" />
               <Image src={user.avatar || "/image6.jpg"} alt='' width={128} height={128} className="w-32 h-32 rounded-full absolute left-0 right-0 m-auto -bottom-16 ring-4 ring-white" />
             </div>
             <h1 className='mt-20 mb-4 text-2xl font-medium'>{(user.name && user.surname) ? user.name + " " + user.surname : user.username}</h1>

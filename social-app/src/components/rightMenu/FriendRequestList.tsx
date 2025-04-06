@@ -53,7 +53,7 @@ const FriendRequestList = ({ requests }: { requests: RequestWithUser[] }) => {
         <div key={request.id} className="flex items-center justify-between p-2">
           <div className="flex items-center gap-4">
             <Image
-              src={request.sender.avatar || "/image7.jpg"} // Use a default image if none is provided
+              src={request.sender.avatar || "/image8.jpg"} 
               alt="profile"
               width={40}
               height={40}
