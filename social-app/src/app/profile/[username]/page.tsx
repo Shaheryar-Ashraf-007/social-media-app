@@ -79,7 +79,7 @@ const Profilepage = async ({ params }: { params: { username: string } }) => {
               </div>
             </div>
           </div>
-          <Feed />
+          <Feed username={user.username} />
         </div>
       </div>
       <div className="mt-28 mr-24 hidden lg:block w-[20%] fixed right-0 top-0 h-full overflow-y-auto scrollbar-hidden">

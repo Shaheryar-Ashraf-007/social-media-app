@@ -1,150 +1,110 @@
 "use client";
 
-import React, { useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
-import { BsFillEmojiWinkFill } from "react-icons/bs";
-import story from "../../public/story.jpg";
-import photo from "../../public/photo.png";
-import video from "../../public/video.png";
-import poll from "../../public/poll.png";
-import events from "../../public/events.png";
-
-// Define a Post type
-interface Post {
-  id: string;
-  desc: string;
-  img:string;
-  createdAt: string;
-  updatedAt:string;
-  userId:string;
-}
+import { useState } from "react";
+import AddPostButton from "../components/rightMenu/AddPostButton";
+import { addPost } from "@/lib/actions";
+import { BsEmojiWinkFill } from "react-icons/bs";
 
 const AddPost = () => {
+  const { user, isLoaded } = useUser();
   const [desc, setDesc] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
 
+  if (!isLoaded) return "Loading...";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    if (!desc.trim()) {
-      setError("Please enter some content for your post");
-      return;
-    }
-    
-    setLoading(true);
-    setError("");
+
+    if (!desc.trim()) return;
 
     try {
-      const response = await fetch("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ desc }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create post");
-      }
-
-      const createdPost: Post = data.post;
-      
-      console.log("Post created successfully:", createdPost);
-      setSuccess(true);
+      await addPost(desc, imgUrl || "");
       setDesc("");
-      
-      setTimeout(() => {
-        setSuccess(false);
-      }, 3000);
-      
+      setImgUrl(null);
     } catch (error) {
-      console.error("Error:", error);
-      setError((error as Error).message || "Something went wrong");
-    } finally {
-      setLoading(false);
+      console.error("Failed to post:", error);
     }
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md text-sm mt-4">
-      <form onSubmit={handleSubmit} className="flex items-center justify-between gap-2">
-        <div className="w-20 text-center">
-          <Image
-            src={story}
-            width={80}
-            height={80}
-            className="ml-2 w-12 h-12 rounded-full object-cover"
-            alt="Profile Picture"
-            unoptimized
+    <div className="p-4 bg-white shadow-md rounded-lg flex gap-4 justify-between text-sm">
+      {/* AVATAR */}
+      <Image
+        src={user?.imageUrl || "/profile.jpg"}
+        alt="Profile"
+        width={48}
+        height={48}
+        className="w-12 h-12 object-cover rounded-full"
+      />
+
+      {/* POST FORM */}
+      <div className="flex-1">
+        <form onSubmit={handleSubmit} className="flex gap-4">
+          <textarea
+            placeholder="What's on your mind?"
+            className="flex-1 bg-slate-100 rounded-lg p-2"
+            value={desc}
+            onChange={(e) => setDesc(e.target.value)}
+            required
           />
-        </div>
-
-        <textarea
-          className="mt-4 w-full bg-slate-100 p-2 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-300"
-          rows={3}
-          placeholder="What's on your mind?"
-          value={desc}
-          onChange={(e) => setDesc(e.target.value)}
-          disabled={loading}
-          required
-        />
-
-        <div className="flex flex-col gap-2">
-          <BsFillEmojiWinkFill
-            size={28}
-            className="text-yellow-500 cursor-pointer"
-          />
-          <button
-            type="submit"
-            className={`bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 transition-colors ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled={loading}
-          >
-            {loading ? "Posting..." : "Post"}
-          </button>
-        </div>
-      </form>
-
-      {success && (
-        <div className="mt-2 p-2 bg-green-100 text-green-700 rounded-md">
-          Post created successfully!
-        </div>
-      )}
-      
-      {error && (
-        <div className="mt-2 p-2 bg-red-100 text-red-700 rounded-md">
-          {error}
-        </div>
-      )}
-
-      <div className="flex items-center justify-center gap-4 mt-4">
-        {[
-          { icon: photo, label: "Photo" },
-          { icon: video, label: "Video" },
-          { icon: poll, label: "Poll" },
-          { icon: events, label: "Event" },
-        ].map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-2 cursor-pointer hover:text-teal-500 transition-colors"
-          >
-            <Image
-              src={item.icon}
-              width={28}
-              height={28}
-              className="rounded-md"
-              alt={`${item.label} Icon`}
-              unoptimized
-            />
-            <span>{item.label}</span>
+          <div className="flex flex-col justify-between">
+            <BsEmojiWinkFill className="text-2xl text-yellow-400 cursor-pointer" />
+            <AddPostButton />
           </div>
-        ))}
+        </form>
+
+        {/* POST OPTIONS */}
+        <div className="flex items-center gap-4 mt-4 text-gray-400 flex-wrap">
+          <CldUploadWidget
+            uploadPreset="social"
+            onSuccess={(result: any) => {
+              setImgUrl(result?.info?.secure_url);
+              console.log("Image uploaded:", result?.info?.secure_url);
+            }}
+          >
+            {({ open }) => (
+              <div
+                className="flex items-center gap-2 cursor-pointer hover:text-blue-400"
+                onClick={() => open?.()}
+              >
+                <Image src="/photo.png" alt="Upload" width={20} height={20} />
+                Photo
+              </div>
+            )}
+          </CldUploadWidget>
+
+          <div className="flex items-center gap-2 cursor-pointer hover:text-blue-400">
+            <Image src="/video.png" alt="" width={20} height={20} />
+            Video
+          </div>
+
+          <div className="flex items-center gap-2 cursor-pointer hover:text-blue-400">
+            <Image src="/poll.png" alt="" width={20} height={20} />
+            Poll
+          </div>
+
+          <div className="flex items-center gap-2 cursor-pointer hover:text-blue-400">
+            <Image src="/events.png" alt="" width={20} height={20} />
+            Event
+          </div>
+        </div>
+
+        {/* Preview Uploaded Image */}
+        {imgUrl && (
+          <div className="mt-4">
+            <p className="text-xs text-gray-500">Image Preview:</p>
+            <Image
+              src={imgUrl}
+              alt="Uploaded preview"
+              width={300}
+              height={200}
+              className="rounded-md mt-2"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

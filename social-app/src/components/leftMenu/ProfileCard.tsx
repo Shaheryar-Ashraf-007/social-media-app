@@ -4,10 +4,13 @@ import Image from "next/image";
 import image8 from "../../../public/image8.jpg";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/client";
+import Link from "next/link";
 
 const ProfileCard =async() => {
 
   const {userId} = await auth()
+
+  
 
   if (!userId) {
     return null
@@ -72,7 +75,11 @@ const ProfileCard =async() => {
             </div>
             <span className="text-xs text-gray-500">{user._count.followers}</span>
           </div>
-          <button className="bg-blue-500 rounded-lg p-2 text-white">My Profile</button>
+          <Link href={`/profile/${user.username}`}>
+          <button className="bg-blue-500 text-white text-xs p-2 rounded-md">
+            My Profile
+          </button>
+        </Link>
         </div>
       </div>
     </div>
